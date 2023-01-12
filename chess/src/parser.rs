@@ -2,21 +2,21 @@ use std::collections::HashMap;
 use ux::*;
 
 
-pub(crate) fn parse_chess_notation(chess_board: &mut Vec<u32>, game_state: &mut u32, chess_notation: &str){
+pub(crate) fn parse_chess_notation(chess_board: &mut Vec<Vec<u16>>, game_state: &mut u32, chess_notation: &str){
     *game_state = 0;
     let piece_map = HashMap::from([
-        ('P', u4::new(0b0000)),
-        ('N', u4::new(0b0001)),
-        ('B', u4::new(0b0010)),
-        ('R', u4::new(0b0011)),
-        ('Q', u4::new(0b0100)),
-        ('K', u4::new(0b0101)),
-        ('p', u4::new(0b1000)),
-        ('n', u4::new(0b1001)),
-        ('b', u4::new(0b1010)),
-        ('r', u4::new(0b1011)),
-        ('q', u4::new(0b1100)),
-        ('k', u4::new(0b1101))
+        ('P', 1),
+        ('N', 2),
+        ('B', 3),
+        ('R', 4),
+        ('Q', 5),
+        ('K', 6),
+        ('p', 9),
+        ('n', 10),
+        ('b', 11),
+        ('r', 12),
+        ('q', 13),
+        ('k', 14)
     ]);
     let castle_map = HashMap::from([
         ('K', 0b10),
@@ -48,7 +48,7 @@ pub(crate) fn parse_chess_notation(chess_board: &mut Vec<u32>, game_state: &mut 
                         break '_outer
                     }
                     println!("row {}", row);
-                    chess_board[row] = chess_board[row] | (0b1111 << (7 - column) * 4);
+                    chess_board[row][column] = 0;
                     column += 1;
                     println!("{}", i);
                 }
@@ -59,7 +59,7 @@ pub(crate) fn parse_chess_notation(chess_board: &mut Vec<u32>, game_state: &mut 
                     println!("break");
                     break '_outer
                 }
-                chess_board[row] = (chess_board[row] & !(0b1111 << (7 - column) * 4)) | (u32::from(piece_map[&c]) << (7 - column) * 4);
+                chess_board[row][column] = piece_map[&c];
                 column += 1;
             }
         }
